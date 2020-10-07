@@ -6,6 +6,21 @@ import lotto_scraper as lotto
 
 csv_fname = 'lotto.csv'
 
+def heartbeat():
+    print('-----> Checking heartbeat')
+    new_tuple = lotto.get_numbers()
+
+    # csv파일의 마지막 라인에 저장된 last 회차(draw_no)를 read
+    with open(csv_fname) as f:
+        for row in csv.reader(f):
+            pass
+        last_row = list(map(int, row))
+
+    if new_tuple[0] == last_row[0]:
+        print('Heartbeat OK...')
+    else:
+        raise Exception('Heartbeat NG...')
+
 def all_main():
     print('-----> All Mode')
     all_list = lotto.get_all_numbers()
@@ -20,8 +35,7 @@ def one_main(draw_no):
 
     # csv파일의 마지막 라인에 저장된 last 회차(draw_no)를 read
     with open(csv_fname) as f:
-        reader = csv.reader(f)
-        for row in reader:
+        for row in csv.reader(f):
             pass
         last_row = list(map(int, row))
 
@@ -40,13 +54,17 @@ def one_main(draw_no):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--heartbeat', action='store_true')
     parser.add_argument('--all', action='store_true')
     parser.add_argument('--num', type=int, default=0)
     args = parser.parse_args()
 
     print(args)
 
-    if args.all:
+    if args.heartbeat:
+        # heartbeat check
+        heartbeat()
+    elif args.all:
         # all numbers
         all_main()
     else:
