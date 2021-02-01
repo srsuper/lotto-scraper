@@ -5,8 +5,8 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 
 
-last_url = 'https://www.dhlottery.co.kr/gameResult.do?method=byWin'
-base_url = 'https://www.dhlottery.co.kr/gameResult.do?method=byWin&drwNo='
+#last_url = 'https://www.dhlottery.co.kr/gameResult.do?method=byWin'
+base_url = 'https://myplaybet.com'
 
 def _scraper(url):
     r = requests.get(url)
@@ -16,24 +16,24 @@ def _scraper(url):
 
 def _parser(soup):
     # <meta id="desc" name="description" content="동행복권 931회 당첨번호 14,15,23,25,35,43+32. 1등 총 8명, 1인당 당첨금액 2,957,108,063원.">
-    content = soup.find('meta', {'id': 'desc', 'name': 'description'})['content']
+    content = soup.find('div', {'id': 'result-table'})['content']
 
     # content: '동행복권 931회 당첨번호 14,15,23,25,35,43+32. 1등 총 8명, 1인당 당첨금액 2,957,108,063원.'
-    sync = '동행복권 '
+    sync = 'รอผล'
     if content.index(sync) != 0:
         raise Exception('No found start string.')
 
     s_idx = len(sync)
-    e_idx = content.index('. 1등')
+    e_idx = content.index('ไม่มีรอบ')
 
-    content = content[s_idx:e_idx]
+    #content = content[s_idx:e_idx]
     # content: '931회 당첨번호 14,15,23,25,35,43+32'
-    content = content.replace('회 당첨번호 ', ',')
-    content = content.replace('+', ',')
+    #content = content.replace('회 당첨번호 ', ',')
+    #content = content.replace('+', ',')
 
-    numbers = tuple(map(int, content.split(',')))
+    #numbers = tuple(map(int, content.split(',')))
 
-    return numbers
+    #return numbers
 
 def _last_number():
     soup = _scraper(last_url)
